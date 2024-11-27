@@ -26,7 +26,8 @@ public class SimonSaysGame {
 			System.out.println("Welcome to Simon Says!");
 			System.out.println("Please select 1 to start a new game");
 			System.out.println("Please select 2 to read the rules");
-			System.out.println("Please select 3 to exit the game");
+			System.out.println("DANCE OFF select 3");
+			System.out.println("Please select 4 to exit the game");
 			selection = console.nextInt();
 			
 		
@@ -57,6 +58,7 @@ public class SimonSaysGame {
 							TimeUnit.SECONDS.sleep(3);
 							swiftBot.fillUnderlights(white); // Fill the underlights
 							TimeUnit.SECONDS.sleep(3);
+						    swiftBot.fillUnderlights(empty);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -87,9 +89,11 @@ public class SimonSaysGame {
 				    // Optionally wait for both threads to complete before moving on
 				    fillUnderlightsThread.join();
 				    buttonLightThread.join();
-				    
+				    TimeUnit.SECONDS.sleep(3);
 				    System.out.println("Lets run a quick practice!");
+				    TimeUnit.SECONDS.sleep(3);
 				    System.out.println("A random colour will appear, press the correct corresponding button");
+				    TimeUnit.SECONDS.sleep(3);
 				    int randomColour = (int)(Math.random()*4);
 				    swiftBot.fillUnderlights(colours[randomColour]);
 				    TimeUnit.SECONDS.sleep(3);
@@ -98,8 +102,11 @@ public class SimonSaysGame {
 				    while(!correct) {
 				    	 if (ButtonCheck(randomColour)) {
 						    	dance();
+						    	TimeUnit.SECONDS.sleep(2);
 						    	System.out.println("Good Job!");
+						    	TimeUnit.SECONDS.sleep(2);
 						    	System.out.println("Lets do it with two Colours!");
+						    	TimeUnit.SECONDS.sleep(3);
 						    	   randomColour = (int) (Math.random() * 4);
 							        pattern[0] = randomColour;
 							        randomColour = (int) (Math.random() * 4);
@@ -130,6 +137,8 @@ public class SimonSaysGame {
 				    
 				   System.out.println("Now that you understand the rules, go and get a new high score!");
 				   dance();
+				  
+				   pattern = null;
 				    
 				    
 				} catch (InterruptedException e) {
@@ -138,6 +147,15 @@ public class SimonSaysGame {
 				}
 				
 			break;
+			case 3:
+				dance();
+				break;
+			
+			case 4:
+				System.out.println("Come back to play Simon Says Another Time!");
+				on = false;
+				System.exit(0);
+				break;
 			}
 			
 		}
@@ -145,11 +163,21 @@ public class SimonSaysGame {
 	}
 	
 	public static void dance () {
-		for(int i = 0; i < 5; i++) {
-			swiftBot.move(50, -50, 200);
-			swiftBot.move(-50, 50, 200);
-		}
-	}
+
+			
+					for(int i = 0; i< 10; i++) {
+						int randomColour = (int)(Math.random()*4);
+						swiftBot.fillUnderlights(colours[randomColour]); 
+						swiftBot.move(50, -50, 200);
+						swiftBot.move(-50, 50, 200);
+					}
+					swiftBot.fillUnderlights(empty);
+					
+				}
+
+	
+		
+	
 	
 	public static boolean ButtonCheck(int randomColour) {
 	    boolean check = false;
@@ -205,6 +233,7 @@ public class SimonSaysGame {
 	            swiftBot.fillUnderlights(colours[pattern[i]]);
 	            TimeUnit.SECONDS.sleep(2);
 	            swiftBot.fillUnderlights(empty);
+	            TimeUnit.MILLISECONDS.sleep(250);
 	        }
 	        for( int i= 0; i <scoreLength; i++) {
 	        	
