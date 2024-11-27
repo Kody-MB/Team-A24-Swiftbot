@@ -88,7 +88,7 @@ public class SimonSaysGame {
 			    
 			    swiftBot.fillUnderlights(colours[randomColour]);
 			    TimeUnit.SECONDS.sleep(5);
-			    System.out.println("Work?");
+			    System.out.println("Work??");
 			    
 			    
 			} catch (InterruptedException e) {
