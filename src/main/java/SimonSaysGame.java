@@ -7,10 +7,10 @@ public class SimonSaysGame {
 	  static int[] red = {255, 0, 0};
 	    static int[] green = {0, 255, 0};
 	    static int[] blue = {0, 0, 255};
-	    static int[] white = {255, 255, 255};
+	    static int[] yellow = {255, 255, 0};
 	    static int[] empty = {0, 0, 0};
 
-	    static int[][] colours = {red, blue, green, white, empty};
+	    static int[][] colours = {red, blue, green, yellow, empty};
 	public static void main(String[] args) {
 		swiftBot = new SwiftBotAPI();
 		int selection = 0;
@@ -24,11 +24,11 @@ public class SimonSaysGame {
 		int highScore = -1;
 		
 		while(on){
-			System.out.println("Welcome to Simon Says!");
-			System.out.println("Please select 1 to start a new game");
-			System.out.println("Please select 2 to read the rules");
-			System.out.println("DANCE OFF select 3");
-			System.out.println("Please select 4 to exit the game");
+			System.out.println("\nWelcome to Simon Says!");
+			System.out.println("\nPlease select 1 to start a new game");
+			System.out.println("\nPlease select 2 to read the rules");
+			System.out.println("\nDANCE OFF select 3");
+			System.out.println("\nPlease select 4 to exit the game");
 			selection = console.nextInt();
 			
 		
@@ -42,8 +42,8 @@ public class SimonSaysGame {
 					}
 					boolean correct = true;
 					int currentScore = 1;
-					System.out.println("Simon Says \"welcome to the GAME\"");
-					System.out.println("\"Simon Says \"Get ready!\"");
+					System.out.println("\nSimon Says \"welcome to the GAME\"");
+					System.out.println("\nSimon Says \"Get ready!\"");
 					System.out.println("3");
 					TimeUnit.SECONDS.sleep(1);
 					System.out.println("2");
@@ -59,6 +59,11 @@ public class SimonSaysGame {
 						}
 						else {
 							correct = false;
+							 for(int i = 0; i < 5; i++) {
+									swiftBot.fillUnderlights(red);
+									TimeUnit.SECONDS.sleep(2);
+									swiftBot.fillUnderlights(empty);
+								}
 							System.out.println("Oh no that was wrong!");
 							TimeUnit.SECONDS.sleep(2);
 							System.out.println("Your final score is: " + (currentScore - 1));
@@ -103,7 +108,7 @@ public class SimonSaysGame {
 							TimeUnit.SECONDS.sleep(3);
 							swiftBot.fillUnderlights(green); // Fill the underlights
 							TimeUnit.SECONDS.sleep(3);
-							swiftBot.fillUnderlights(white); // Fill the underlights
+							swiftBot.fillUnderlights(yellow); // Fill the underlights
 							TimeUnit.SECONDS.sleep(3);
 						    swiftBot.fillUnderlights(empty);
 						} catch (InterruptedException e) {
@@ -137,6 +142,20 @@ public class SimonSaysGame {
 				    fillUnderlightsThread.join();
 				    buttonLightThread.join();
 				    TimeUnit.SECONDS.sleep(3);
+				    System.out.println("If the robot flashes red like this");
+				    TimeUnit.SECONDS.sleep(1);
+				    for(int i = 0; i < 5; i++) {
+						swiftBot.fillUnderlights(red);
+						TimeUnit.SECONDS.sleep(2);
+						swiftBot.fillUnderlights(empty);
+					}
+				    System.out.println("You entered the wrong colour in the pattern");
+				    TimeUnit.SECONDS.sleep(3);
+				    System.out.println("if the robot dances like this");
+				    TimeUnit.SECONDS.sleep(1);
+				    dance();
+				    System.out.println("the WHOLE pattern is correct and you move to the next round");
+				    TimeUnit.SECONDS.sleep(2);
 				    System.out.println("Lets run a quick practice!");
 				    TimeUnit.SECONDS.sleep(3);
 				    System.out.println("A random colour will appear, press the correct corresponding button");
@@ -160,6 +179,11 @@ public class SimonSaysGame {
 							        pattern[1] = randomColour;     
 						    	correct = miniGame(pattern,2);
 						    	while(!correct) {
+						    		 for(int i = 0; i < 5; i++) {
+											swiftBot.fillUnderlights(red);
+											TimeUnit.SECONDS.sleep(2);
+											swiftBot.fillUnderlights(empty);
+										}
 						    		System.out.println("Come on you got this");
 						    		System.out.println("Lets try again");
 						    		  randomColour = (int) (Math.random() * 4);
@@ -171,6 +195,11 @@ public class SimonSaysGame {
 						    
 						    						    }
 				    	 else {
+				    		 for(int i = 0; i < 5; i++) {
+									swiftBot.fillUnderlights(red);
+									TimeUnit.SECONDS.sleep(2);
+									swiftBot.fillUnderlights(empty);
+								}
 				    		 System.out.println("That wasn't right lets try again");
 				    		 randomColour = (int)(Math.random()*4);
 				    		 swiftBot.fillUnderlights(colours[randomColour]);
