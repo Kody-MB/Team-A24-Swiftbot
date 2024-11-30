@@ -21,6 +21,7 @@ public class SimonSaysGame {
 		
 		int[] pattern = new int [1000] ;
 		boolean on = true;
+		int highScore = -1;
 		
 		while(on){
 			System.out.println("Welcome to Simon Says!");
@@ -34,6 +35,52 @@ public class SimonSaysGame {
 			
 			switch (selection) {
 			case 1: 
+				try {
+					for(int i = 0; i< pattern.length; i++) {
+						 int randomColour = (int)(Math.random()*4);
+						 pattern[i] = randomColour;
+					}
+					boolean correct = true;
+					int currentScore = 1;
+					System.out.println("Simon Says \"welcome to the GAME\"");
+					System.out.println("\"Simon Says \"Get ready!\"");
+					System.out.println("3");
+					TimeUnit.SECONDS.sleep(1);
+					System.out.println("2");
+					TimeUnit.SECONDS.sleep(1);
+					System.out.println("1");
+					TimeUnit.SECONDS.sleep(1);
+					while(correct) {
+						if( miniGame(pattern,currentScore)){
+							currentScore++;
+							System.out.println("Well done your current score is now: " + (currentScore - 1));
+							dance();
+							TimeUnit.SECONDS.sleep(2);
+						}
+						else {
+							correct = false;
+							System.out.println("Oh no that was wrong!");
+							TimeUnit.SECONDS.sleep(2);
+							System.out.println("Your final score is: " + (currentScore - 1));
+							TimeUnit.SECONDS.sleep(1);
+							if((currentScore -1 ) > highScore) {
+								highScore = (currentScore - 1);
+								System.out.println("You achieved a new high score!");
+								TimeUnit.SECONDS.sleep(1);
+								System.out.println("Your new high score is: " + highScore);
+								dance();
+								TimeUnit.SECONDS.sleep(3);
+							}
+						}
+						}
+					
+					
+			}
+				catch(InterruptedException e) {
+					
+				}
+				
+				
 			break;
 			
 			case 2:
