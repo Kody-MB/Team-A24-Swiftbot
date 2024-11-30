@@ -214,7 +214,7 @@ public class SimonSaysGame {
 				   System.out.println("Now that you understand the rules, go and get a new high score!");
 				   dance();
 				  
-				   pattern = null;
+			
 				    
 				    
 				} catch (InterruptedException e) {
