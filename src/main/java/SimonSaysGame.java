@@ -59,10 +59,11 @@ public class SimonSaysGame {
 						}
 						else {
 							correct = false;
-							 for(int i = 0; i < 5; i++) {
+							 for(int i = 0; i < 3; i++) {
 									swiftBot.fillUnderlights(red);
-									TimeUnit.SECONDS.sleep(2);
+									TimeUnit.SECONDS.sleep(1);
 									swiftBot.fillUnderlights(empty);
+									TimeUnit.SECONDS.sleep(1);
 								}
 							System.out.println("Oh no that was wrong!");
 							TimeUnit.SECONDS.sleep(2);
@@ -144,10 +145,11 @@ public class SimonSaysGame {
 				    TimeUnit.SECONDS.sleep(3);
 				    System.out.println("If the robot flashes red like this");
 				    TimeUnit.SECONDS.sleep(1);
-				    for(int i = 0; i < 5; i++) {
+				    for(int i = 0; i < 3; i++) {
 						swiftBot.fillUnderlights(red);
-						TimeUnit.SECONDS.sleep(2);
+						TimeUnit.SECONDS.sleep(1);
 						swiftBot.fillUnderlights(empty);
+						TimeUnit.SECONDS.sleep(1);
 					}
 				    System.out.println("You entered the wrong colour in the pattern");
 				    TimeUnit.SECONDS.sleep(3);
@@ -179,10 +181,11 @@ public class SimonSaysGame {
 							        pattern[1] = randomColour;     
 						    	correct = miniGame(pattern,2);
 						    	while(!correct) {
-						    		 for(int i = 0; i < 5; i++) {
-											swiftBot.fillUnderlights(red);
-											TimeUnit.SECONDS.sleep(2);
+						    		 for(int i = 0; i < 3; i++) {
+						    				swiftBot.fillUnderlights(red);
+											TimeUnit.SECONDS.sleep(1);
 											swiftBot.fillUnderlights(empty);
+											TimeUnit.SECONDS.sleep(1);
 										}
 						    		System.out.println("Come on you got this");
 						    		System.out.println("Lets try again");
@@ -195,10 +198,11 @@ public class SimonSaysGame {
 						    
 						    						    }
 				    	 else {
-				    		 for(int i = 0; i < 5; i++) {
+				    		 for(int i = 0; i < 3; i++) {
 									swiftBot.fillUnderlights(red);
-									TimeUnit.SECONDS.sleep(2);
+									TimeUnit.SECONDS.sleep(1);
 									swiftBot.fillUnderlights(empty);
+									TimeUnit.SECONDS.sleep(1);
 								}
 				    		 System.out.println("That wasn't right lets try again");
 				    		 randomColour = (int)(Math.random()*4);
