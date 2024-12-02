@@ -7,10 +7,10 @@ public class SimonSaysGame {
 	  static int[] red = {255, 0, 0};
 	    static int[] green = {0, 255, 0};
 	    static int[] blue = {0, 0, 255};
-	    static int[] white = {255, 255, 255};
+	    static int[] yellow = {255, 255, 0};
 	    static int[] empty = {0, 0, 0};
 
-	    static int[][] colours = {red, blue, green, white, empty};
+	    static int[][] colours = {red, blue, green, yellow, empty};
 	public static void main(String[] args) {
 		swiftBot = new SwiftBotAPI();
 		int selection = 0;
@@ -22,6 +22,7 @@ public class SimonSaysGame {
 		int[] pattern = new int [1000] ;
 		boolean on = true;
 		int highScore = -1;
+	
 		
 		while(on){
 			System.out.println("Welcome to Simon Says!");
@@ -56,6 +57,24 @@ public class SimonSaysGame {
 							System.out.println("Well done your current score is now: " + (currentScore - 1));
 							dance();
 							TimeUnit.SECONDS.sleep(2);
+							if((currentScore -1) % 5 == 0) {
+								System.out.println("Well done you achieved a score of " + (currentScore -1));
+								System.out.println("If you would like to quit please press the red button");
+								if(ButtonCheck(1)) {
+									correct = false;
+									System.out.println("Your final score is: " + (currentScore - 1));
+									TimeUnit.SECONDS.sleep(1);
+									celebration(currentScore -1);
+									if((currentScore -1 ) > highScore) {
+										highScore = (currentScore - 1);
+										System.out.println("You achieved a new high score!");
+										TimeUnit.SECONDS.sleep(1);
+										System.out.println("Your new high score is: " + highScore);
+										dance();
+										TimeUnit.SECONDS.sleep(3);
+									}
+								}
+							}
 						}
 						else {
 							correct = false;
@@ -63,6 +82,7 @@ public class SimonSaysGame {
 							TimeUnit.SECONDS.sleep(2);
 							System.out.println("Your final score is: " + (currentScore - 1));
 							TimeUnit.SECONDS.sleep(1);
+							celebration(currentScore -1);
 							if((currentScore -1 ) > highScore) {
 								highScore = (currentScore - 1);
 								System.out.println("You achieved a new high score!");
@@ -103,7 +123,7 @@ public class SimonSaysGame {
 							TimeUnit.SECONDS.sleep(3);
 							swiftBot.fillUnderlights(green); // Fill the underlights
 							TimeUnit.SECONDS.sleep(3);
-							swiftBot.fillUnderlights(white); // Fill the underlights
+							swiftBot.fillUnderlights(yellow); // Fill the underlights
 							TimeUnit.SECONDS.sleep(3);
 						    swiftBot.fillUnderlights(empty);
 						} catch (InterruptedException e) {
@@ -221,6 +241,69 @@ public class SimonSaysGame {
 					swiftBot.fillUnderlights(empty);
 					
 				}
+	
+	public static void celebration(int score) throws InterruptedException {
+		if (score < 5 ) {
+			System.out.println("You achieved the score of " + score);
+			System.out.println("Celebration time");
+			Thread celeMovementThread = new Thread(() ->{
+				swiftBot.move(40,0,2000);
+				swiftBot.move(40,40 ,2100 );
+				swiftBot.move(0,40,2000);
+				swiftBot.move(40,20 ,2100 );
+			});
+			Thread celeRandomColourThread = new Thread(()->{
+				for(int i = 0; i< 100; i++) {
+					try {
+					int randomColour = (int)(Math.random()*4);
+					swiftBot.fillUnderlights(colours[randomColour]); 
+						TimeUnit.MILLISECONDS.sleep(25);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+				}	
+			});
+			celeMovementThread.start();
+			celeRandomColourThread.start();
+			
+			celeMovementThread.join();
+			celeRandomColourThread.join();
+			
+			
+		}
+		else if(score > 10) {
+			System.out.println("You achieved the score of " + score);
+			System.out.println("Celebration time");
+			Thread celeMovementThread = new Thread(() ->{
+				swiftBot.move(40,0,2000);
+				swiftBot.move(100,100 ,1000 );
+				swiftBot.move(0,40,2000);
+				swiftBot.move(100,100 ,1000 );
+			});
+			Thread celeRandomColourThread = new Thread(()->{
+				for(int i = 0; i< 100; i++) {
+					try {
+					int randomColour = (int)(Math.random()*4);
+					swiftBot.fillUnderlights(colours[randomColour]); 
+					TimeUnit.MILLISECONDS.sleep(25);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}	
+			});
+			celeMovementThread.start();
+			celeRandomColourThread.start();
+			
+			celeMovementThread.join();
+			celeRandomColourThread.join();
+		}
+		else {
+			
+		}
+	}
 
 	
 		
