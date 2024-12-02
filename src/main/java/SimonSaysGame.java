@@ -58,9 +58,15 @@ public class SimonSaysGame {
 							dance();
 							TimeUnit.SECONDS.sleep(2);
 							if((currentScore -1) % 5 == 0) {
+								TimeUnit.SECONDS.sleep(2);
 								System.out.println("Well done you achieved a score of " + (currentScore -1));
+								TimeUnit.SECONDS.sleep(2);
 								System.out.println("If you would like to quit please press the red button");
-								if(ButtonCheck(1)) {
+								TimeUnit.SECONDS.sleep(2);
+								System.out.println("If you would like to continue press any other button");
+								boolean quit = true;
+								quit = ButtonCheck(0);
+								if(quit) {
 									correct = false;
 									System.out.println("Your final score is: " + (currentScore - 1));
 									TimeUnit.SECONDS.sleep(1);
@@ -250,13 +256,15 @@ public class SimonSaysGame {
 				swiftBot.move(40,0,2000);
 				swiftBot.move(40,40 ,2100 );
 				swiftBot.move(0,40,2000);
-				swiftBot.move(40,20 ,2100 );
+				swiftBot.move(40,40 ,2100 );
 			});
 			Thread celeRandomColourThread = new Thread(()->{
 				for(int i = 0; i< 100; i++) {
 					try {
 					int randomColour = (int)(Math.random()*4);
 					swiftBot.fillUnderlights(colours[randomColour]); 
+					TimeUnit.MILLISECONDS.sleep(25);
+					swiftBot.fillUnderlights(empty);
 						TimeUnit.MILLISECONDS.sleep(25);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
