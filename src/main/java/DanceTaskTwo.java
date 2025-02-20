@@ -127,7 +127,8 @@ public class DanceTaskTwo {
 	
 
 	public static void validHexes(String ScannedString) {
-	    // Reset lists for each scan
+		invalidHexes.clear();
+		currentHexNums.clear();
 	    
 	    int validHexCount = 0;
 	    String hexNum = "";
