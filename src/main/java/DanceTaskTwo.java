@@ -50,7 +50,7 @@ public class DanceTaskTwo {
 			if(!ScannedString.isEmpty()) {
 			validHexes(ScannedString);
 			System.out.println();
-			System.out.println("The following symbols have been removed for not being valid Hexadecimal Numbers");
+			System.out.println("The following symbols have been removed for not being valid Hexadecimal Numbers or because we have exceeded the limit of 5");
 			for(int i =0; i< invalidHexes.size();i++) {
 				System.out.print(invalidHexes.get(i) + ':');
 			}
@@ -79,6 +79,18 @@ public class DanceTaskTwo {
 			TimeUnit.SECONDS.sleep(1);
 			System.out.println("1");
 			TimeUnit.SECONDS.sleep(1);
+			try {
+				for(int i = 0; i < currentHexNums.size();i++) {
+					moveLogFileWriter.write("\n" + currentHexNums.get(i));
+				}
+				
+			}
+			
+
+			catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("Log move file does not exist");
+			}
 			for(int i = 0; i < currentHexNums.size();i++) {
 				calcRGB(currentHexNums.get(i));
 				peformMovements(currentHexNums.get(i));
@@ -107,20 +119,16 @@ public class DanceTaskTwo {
 		} 
 	}
 	try {
-		for(int i = 0; i < currentHexNums.size();i++) {
-			moveLogFileWriter.write("\n" + currentHexNums.get(i));
-		}
 		System.out.println("Find the move log file here! --> " + moveLog.getAbsolutePath());
 		moveLogFileWriter.close();
 		System.out.println("Come make me dance again soon!");
 		
 	}
-	
-
 	catch (IOException e) {
 		e.printStackTrace();
 		System.out.println("Log move file does not exist");
 	}
+
 	
 	
 	}
