@@ -3,48 +3,46 @@ import java.util.*;
 import java.util.concurrent.*;
 public class SimonSaysGame {
 	static SwiftBotAPI swiftBot;
-	//This defines colour codes for the underlights
+	
 	  static int[] red = {255, 0, 0};
 	    static int[] green = {0, 255, 0};
 	    static int[] blue = {0, 0, 255};
 	    static int[] yellow = {255, 255, 0};
 	    static int[] empty = {0, 0, 0};
-	
-            //Array is used to map the colours to their codes
+
 	    static int[][] colours = {red, blue, green, yellow, empty};
 	public static void main(String[] args) {
 		swiftBot = new SwiftBotAPI();
-		int selection = 0; //This stores user's menu choice
-		Scanner console = new Scanner(System.in); // Scans for user inputs
+		int selection = 0;
+		Scanner console = new Scanner(System.in);
 
-		//This maps theRobot's buttons to their corresponding indices 
 		Button buttons[] = { Button.A, Button.B, Button.X, Button.Y };
 		
 		
-		int[] pattern = new int [1000] ; //Array is used to store the colour pattern
-		boolean on = true; //Controls the main game loop
-		int highScore = -1; //Stores the highest score
+		int[] pattern = new int [1000] ;
+		boolean on = true;
+		int highScore = -1;
 	
-		// Displays the main menu to the user
+		
 		while(on){
 			System.out.println("\nWelcome to Simon Says!");
 			System.out.println("\nPlease select 1 to start a new game");
 			System.out.println("\nPlease select 2 to read the rules");
 			System.out.println("\nDANCE OFF select 3");
 			System.out.println("\nPlease select 4 to exit the game");
-			selection = console.nextInt(); // Captures user input
+			selection = console.nextInt();
 			
 		
 			
 			switch (selection) {
-			case 1: //Starts a new game 
+			case 1: 
 				try {
 					for(int i = 0; i< pattern.length; i++) {
 						 int randomColour = (int)(Math.random()*4);
-						 pattern[i] = randomColour; // Generates a random pattern of colours
+						 pattern[i] = randomColour;
 					}
-					boolean correct = true; // Tracks whether user is still correct
-					int currentScore = 1; // Score starts from 1
+					boolean correct = true;
+					int currentScore = 1;
 					System.out.println("\nSimon Says \"welcome to the GAME\"");
 					System.out.println("\nSimon Says \"Get ready!\"");
 					System.out.println("3");
@@ -53,17 +51,13 @@ public class SimonSaysGame {
 					TimeUnit.SECONDS.sleep(1);
 					System.out.println("1");
 					TimeUnit.SECONDS.sleep(1);
-				        // This is the main loop for the game
-
-					while(correct) {  //Checks if user is correctly doing the pattern
+					while(correct) {
 						if( miniGame(pattern,currentScore)){
-							currentScore++; // Increase the score if pattern is followed
+							currentScore++;
 							System.out.println("Well done your current score is now: " + (currentScore - 1));
 							System.out.println();
-							dance(); // Does the celebration
+							dance();
 							TimeUnit.SECONDS.sleep(2);
-
-							//This offers the chance to quit every 5 rounds
 							if((currentScore -1) % 5 == 0) {
 								TimeUnit.SECONDS.sleep(2);
 								System.out.println("you achieved a score of " + (currentScore -1));
@@ -72,13 +66,12 @@ public class SimonSaysGame {
 								TimeUnit.SECONDS.sleep(2);
 								System.out.println("If you would like to continue press any other button\n");
 								boolean quit = true;
-								quit = ButtonCheck(0); // Checks if the user presses the quit option
+								quit = ButtonCheck(0);
 								if(quit) {
-									correct = false; // Ends the game if the user presses the quit button
+									correct = false;
 									System.out.println("Your final score is: " + (currentScore - 1));
 									TimeUnit.SECONDS.sleep(1);
 									celebration(currentScore -1);
-									// Updates the highscore
 									if((currentScore -1 ) > highScore) {
 										highScore = (currentScore - 1);
 										System.out.println("\nYou achieved a new high score!\n");
@@ -91,7 +84,7 @@ public class SimonSaysGame {
 							}
 						}
 						else {
-							correct = false; //This now shows hoe the incorrect pattern input is dealt with
+							correct = false;
 							 for(int i = 0; i < 3; i++) {
 									swiftBot.fillUnderlights(red);
 									TimeUnit.SECONDS.sleep(1);
@@ -102,9 +95,7 @@ public class SimonSaysGame {
 							TimeUnit.SECONDS.sleep(2);
 							System.out.println("Your final score is: " + (currentScore - 1));
 							TimeUnit.SECONDS.sleep(1);
-							celebration(currentScore -1);// Does celebration
-
-							//This updates the highscore
+							celebration(currentScore -1);
 							if((currentScore -1 ) > highScore) {
 								highScore = (currentScore - 1);
 								System.out.println("You achieved a new high score!\n");
@@ -119,13 +110,13 @@ public class SimonSaysGame {
 					
 			}
 				catch(InterruptedException e) {
-				//This part is to deal with any interruption throughout the game	
+					
 				}
 				
 				
 			break;
 			
-			case 2:// Displayes the rules of the game
+			case 2:
 				try {
 			
 
@@ -136,7 +127,7 @@ public class SimonSaysGame {
 					TimeUnit.SECONDS.sleep(2);
 					System.out.println("Please look at your robot and take note of the colour and its button\n");
 					TimeUnit.SECONDS.sleep(3);
-					// This demonstrates the colour mappings to the buttons
+					
 					Thread fillUnderlightsThread = new Thread(() -> { 
 				        try {
 				        	swiftBot.fillUnderlights(red); // Fill the underlights
@@ -180,7 +171,7 @@ public class SimonSaysGame {
 				    buttonLightThread.join();
 				    TimeUnit.SECONDS.sleep(3);
 				    System.out.println("If the robot flashes red like this\n");
-				    TimeUnit.SECONDS.sleep(1); // Robot will flash red to show error
+				    TimeUnit.SECONDS.sleep(1);
 				    for(int i = 0; i < 3; i++) {
 						swiftBot.fillUnderlights(red);
 						TimeUnit.SECONDS.sleep(1);
@@ -267,7 +258,7 @@ public class SimonSaysGame {
 				dance();
 				break;
 			
-			case 4: // Quits the game
+			case 4:
 				System.out.println("\nCome back to play Simon Says Another Time!");
 				on = false;
 				System.exit(0);
@@ -277,7 +268,7 @@ public class SimonSaysGame {
 		}
 	
 	}
-	//This is how we make the robot do the victory dance
+	
 	public static void dance () {
 
 			
@@ -290,7 +281,7 @@ public class SimonSaysGame {
 					swiftBot.fillUnderlights(empty);
 					
 				}
-	// Methord to celebrate based on the user score
+	
 	public static void celebration(int score) throws InterruptedException {
 		if (score < 5 ) {
 			System.out.println("You achieved the score of " + score);
@@ -311,7 +302,7 @@ public class SimonSaysGame {
 						TimeUnit.MILLISECONDS.sleep(25);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();// This handles any interruptions
+						e.printStackTrace(); 
 					}
 				
 				}	
@@ -324,7 +315,7 @@ public class SimonSaysGame {
 			
 			
 		}
-		else if(score > 10) { // If the score is greater then 10 this celebration will occur
+		else if(score > 10) {
 			System.out.println("You achieved the score of " + score);
 			System.out.println("CELEBRATION RUN!");
 			Thread celeMovementThread = new Thread(() ->{
@@ -359,17 +350,17 @@ public class SimonSaysGame {
 	
 		
 	
-	// How we check id the user presses the correct button
+	
 	public static boolean ButtonCheck(int randomColour) {
 	    boolean check = false;
 	    
-	    final int[] buttonPress = { -1 }; // Array is used to store the buttons that have been pressed
+	    final int[] buttonPress = { -1 }; 
 	    Button buttons[] = { Button.A, Button.B, Button.X, Button.Y };
 	    CountDownLatch latch = new CountDownLatch(1); // Latch to wait for a button press
 
 	    // Configure button actions
 	    swiftBot.enableButton(Button.A, () -> {
-	        buttonPress[0] = 0; 
+	        buttonPress[0] = 0;
 	        swiftBot.disableButton(Button.A);
 	        latch.countDown(); // Release the latch when Button A is pressed
 	    });
