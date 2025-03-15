@@ -1,29 +1,24 @@
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Scanner;
-
+import swiftbot.ImageSize;
 import swiftbot.SwiftBotAPI;
 import java.util.concurrent.*;
 import java.io.*;
 public class DanceTaskTwo {
+
 	static SwiftBotAPI swiftBot;
-	
-	static ArrayList <String> InputtedHexes = new ArrayList<String>();
 	static ArrayList <String> invalidHexes = new ArrayList<String>();
-	static ArrayList <String> currentHexNums = new ArrayList<String>();
-	static int red =0;
-	static int green=0;
-	static int blue=0;
-	
+	static ArrayList<Moves> currentHexNums = new ArrayList<Moves>(); //stores the current list of inputed numbers 
+
 	public static void main(String[] args) {
- 	int counter = 0;
 	BufferedImage ScannedImage;
 	String ScannedString = null;
-	String wtf;
-	 File moveLog = new File("TaskTwoDance_Move_Log_File.txt");
+	 File moveLog = new File("TaskTwoDance_Move_Log_File.txt"); //creates new file for completed moves
      FileWriter moveLogFileWriter = null;
 	boolean programOn = true;
 	Scanner console = new Scanner(System.in);
+	
 	try {
 	 moveLogFileWriter = new FileWriter(moveLog);
 	} catch (IOException e) {
@@ -35,79 +30,123 @@ public class DanceTaskTwo {
 	swiftBot = new SwiftBotAPI();
 	System.out.println("-------------Welcome-------------");
 	while(programOn){
+		
 		try {
 			System.out.println("Please scan a QR code");
+			int scanCount =0;
 			ScannedImage = swiftBot.getQRImage();
 			ScannedString = swiftBot.decodeQRImage(ScannedImage);
-			while(ScannedString.isEmpty()) {
+			boolean earlyExit = false;
+			
+			while(ScannedString.isEmpty() && !earlyExit) { // checks for a valid string or if the user has exited early
+				
 			System.out.println("no QR code detected please try again");
+			scanCount = scanCount + 1;
+			System.out.println("Scan count: " + scanCount);
 			TimeUnit.SECONDS.sleep(2);
 			ScannedImage = swiftBot.getQRImage();
 			ScannedString = swiftBot.decodeQRImage(ScannedImage);
+			if (scanCount % 5 ==0) { //checks for QR code 5 times before asking if the user is still trying
+				System.out.println("Are you still trying to scan?");
+				System.out.println("type y/Y for yes or n/N for No");
+				String stillHereCheck = console.nextLine().toUpperCase();
+				while(!stillHereCheck.equals("Y") && !stillHereCheck.equals("N")){
+					System.out.println("type y/Y for yes or n/N for No");
+					stillHereCheck = console.nextLine().toUpperCase();
+				}
+				if(stillHereCheck.equals("Y")) {
+					System.out.println("try a different QR code or move the camera"); //suggests options if user is still trying
+					TimeUnit.SECONDS.sleep(2);
+					ScannedImage = swiftBot.getQRImage();
+					ScannedString = swiftBot.decodeQRImage(ScannedImage);
+				}
+				if(stillHereCheck.equals("N")) {
+					earlyExit = true;
+				}
 			}
-			System.out.println("The following String Has Been Scanned - " + ScannedString);
+			
+			}
+			
+			if(earlyExit) {
+				programOn = false; //switches program off
+				break;
+			}
+			
+			System.out.println("The following String Has Been Scanned - " + ScannedString); //shows user what string has been scanned 
 			TimeUnit.SECONDS.sleep(2);
+			
 			if(!ScannedString.isEmpty()) {
 			validHexes(ScannedString);
-			System.out.println();
-			System.out.println("The following symbols have been removed for not being valid Hexadecimal Numbers or because we have exceeded the limit of 5");
-			for(int i =0; i< invalidHexes.size();i++) {
-				System.out.print(invalidHexes.get(i) + ':');
-			}
-			TimeUnit.SECONDS.sleep(2);
-			System.out.println();
-			System.out.println("The following moves will be done");
-			for(int i =0; i< currentHexNums.size();i++) {
-				System.out.print(currentHexNums.get(i) + ':');
-			}
-			System.out.println();
 			
-			for(int i = 0; i < currentHexNums.size();i++) {
-				calcRGB(currentHexNums.get(i));
-				System.out.println("Hexadecimal Number "+ currentHexNums.get(i)+
-						", Octal Number " + hexToOctal(currentHexNums.get(i)) + 
-						", Decimal Number " + hexToDec(currentHexNums.get(i))+
-						", Binary Number " + hexToBin(currentHexNums.get(i))+
-						", Wheel Speed = " + calcWheelSpeed(currentHexNums.get(i))+
-						", LED Colour (Red " + red +  ", Green " + green + ", Blue " + blue + ")");
-						TimeUnit.SECONDS.sleep(1);}
-			
-			System.out.println("Give me some space and lets get ready to move!");
-			System.out.println("Starting in 3");
-			TimeUnit.SECONDS.sleep(1);
-			System.out.println("2");
-			TimeUnit.SECONDS.sleep(1);
-			System.out.println("1");
-			TimeUnit.SECONDS.sleep(1);
-			try {
-				for(int i = 0; i < currentHexNums.size();i++) {
-					moveLogFileWriter.write("\n" + currentHexNums.get(i));
-				}
-				
-			}
-			
-
-			catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("Log move file does not exist");
-			}
-			for(int i = 0; i < currentHexNums.size();i++) {
-				calcRGB(currentHexNums.get(i));
-				peformMovements(currentHexNums.get(i));
-			}
-			System.out.println("If you would like scan a new set of hexdecimal moves please type Y/y");
-			System.out.println("If you would like to log the moves and quit the progam please type N/n");
-			String input = console.nextLine().toUpperCase();
-			
-			while(!input.equals("N") && !input.equals("Y") ) {
-				System.out.println("Please input n/N or y/Y");
-				input = console.nextLine().toUpperCase();
-			}
-			if(input.equals("N")) {
-				programOn = false;
+			if(currentHexNums.isEmpty()) { //checks if there were valid hexadecimal numbers 
+				System.out.println("no valid hexadecimal numbers");
+				System.out.println("only hexadecimal numbers are accepted moves");
+				TimeUnit.SECONDS.sleep(2);
 			}
 			else {
+				System.out.println();
+				System.out.println("The following symbols have been removed for not being valid Hexadecimal Numbers or because we have exceeded the limit of 5");
 				
+				for(int i =0; i< invalidHexes.size();i++) {
+					System.out.print(invalidHexes.get(i) + ':');
+				} //shows the omitted symbols
+				
+				TimeUnit.SECONDS.sleep(2);
+				System.out.println();
+				System.out.println("The following moves will be done");
+				
+				for(int i =0; i< currentHexNums.size();i++) {
+					System.out.print(currentHexNums.get(i).getHexNum() + ":");
+				} //shows the valid move set
+				
+				System.out.println();
+				
+				for(int i = 0; i < currentHexNums.size();i++) {
+					System.out.println("Hexadecimal Number "+ currentHexNums.get(i).getHexNum()+
+							", Octal Number " + currentHexNums.get(i).getOctNum() + 
+							", Decimal Number " + currentHexNums.get(i).getDecNum()+
+							", Binary Number " + currentHexNums.get(i).getBinNum()+
+							", Wheel Speed = " + currentHexNums.get(i).getWheelSpeed()+
+							", LED Colour (Red " + currentHexNums.get(i).getRed() 
+							+  ", Green " + currentHexNums.get(i).getGreen() 
+							+ ", Blue " + currentHexNums.get(i).getBlue() + ")");
+							TimeUnit.SECONDS.sleep(1);} // outputs the list of moves and their respective parameters 
+				
+				System.out.println("Give me some space and lets get ready to move!");
+				System.out.println("Starting in 3");
+				TimeUnit.SECONDS.sleep(1);
+				System.out.println("2");
+				TimeUnit.SECONDS.sleep(1);
+				System.out.println("1");
+				TimeUnit.SECONDS.sleep(1);
+				
+				try {
+					for(int i = 0; i < currentHexNums.size();i++) {
+						moveLogFileWriter.write("\n" + currentHexNums.get(i).getHexNum());
+					} //logs the move set into the move log file 
+					
+				}
+				
+
+				catch (IOException e) {
+					e.printStackTrace();
+					System.out.println("Log move file does not exist");
+				}
+				for(int i = 0; i < currentHexNums.size();i++) {
+					currentHexNums.get(i).peformMovements();
+				}// runs the moves one by one 
+				System.out.println("If you would like scan a new set of hexdecimal moves please type Y/y");
+				System.out.println("If you would like to log the moves and quit the progam please type N/n");
+				//prompts user to input a new QR Code or to exit the program
+				String input = console.nextLine().toUpperCase();
+				
+				while(!input.equals("N") && !input.equals("Y") ) {
+					System.out.println("Please input n/N or y/Y");
+					input = console.nextLine().toUpperCase();
+				}
+				if(input.equals("N")) {
+					programOn = false;
+				} //switches the program off exiting the while loop 
 			}
 	}
 	
@@ -119,9 +158,9 @@ public class DanceTaskTwo {
 		} 
 	}
 	try {
-		System.out.println("Find the move log file here! --> " + moveLog.getAbsolutePath());
+		System.out.println("Find the move log file here! --> " + moveLog.getAbsolutePath()); //outputs the file path for move log
 		moveLogFileWriter.close();
-		System.out.println("Come make me dance again soon!");
+		System.out.println("Come make me dance again soon!"); 
 		
 	}
 	catch (IOException e) {
@@ -136,44 +175,38 @@ public class DanceTaskTwo {
 
 	public static void validHexes(String ScannedString) {
 		invalidHexes.clear();
-		currentHexNums.clear();
-	    
+		currentHexNums.clear(); //readies program for new inputs 
 	    int validHexCount = 0;
 	    String hexNum = "";
-	    boolean validSymbol = true;
 
 	    for (int i = 0; i < ScannedString.length(); i++) {
-	        char currentChar = ScannedString.charAt(i);
+	        char currentChar = ScannedString.charAt(i); //checks each part of the string
 
-	        if (currentChar == ':') {
-	            if (!hexNum.isEmpty()) { // Process previous hex segment
-	                if (hexNum.matches("[0-9a-fA-F]{1,2}")) { // Valid hex (1 or more characters)
-	                    if (validHexCount < 5) {
-	                        currentHexNums.add(hexNum);
+	        if (currentChar == ':') { //checks if its the end of hexadecimal number
+	            if (!hexNum.isEmpty()) { //process previous hex segment
+	                if (hexNum.matches("[0-9a-fA-F]{1,2}")) { //checks if its a valid 2 digit hex number 
+	                    if (validHexCount < 5) {// checks if the list of current inputs is less than 5
+	                        currentHexNums.add(new Moves(hexNum, swiftBot));// creates new hex object
 	                        validHexCount++;
 	                    } else {
-	                        invalidHexes.add(hexNum);
+	                        invalidHexes.add(hexNum); //adds if exceeds 5
 	                    }
 	                } else {
-	                    invalidHexes.add(hexNum);
+	                    invalidHexes.add(hexNum); //adds if not valid hex or more than 2 digits
 	                }
 	            }
-	            hexNum = ""; // Reset for next segment
-	            validSymbol = true;
+	            hexNum = ""; //reset for next segment
+	     
 	        } else {
 	            hexNum += currentChar;
-	            if (!Character.toString(currentChar).matches("[0-9a-fA-F]{1,2}")) {
-	                validSymbol = false;
-	               
-	            }
 	        }
 	    }
 
-	    // Handle the last segment if not processed
+	    //handles the last digit if it does not end in a ':'
 	    if (!hexNum.isEmpty()) {
-	        if (hexNum.matches("[0-9a-fA-F]{1,2}")) { // Allow single-character hex
+	        if (hexNum.matches("[0-9a-fA-F]{1,2}")) {
 	            if (validHexCount < 5) {
-	                currentHexNums.add(hexNum);
+	            	 currentHexNums.add(new Moves(hexNum, swiftBot));
 	            } else {
 	                invalidHexes.add(hexNum);
 	            }
@@ -181,132 +214,6 @@ public class DanceTaskTwo {
 	            invalidHexes.add(hexNum);
 	        }
 	    }
-	}
-	
-	public static int hexToDec(String hexNum) {
-		char symbol;
-		int hexNum2Dec = 0;
-		int lengthOfHexNum = hexNum.length()-1;
-		for(int i = 0; i < hexNum.length();i++) {
-			symbol = hexNum.charAt(i);
-			if(Character.toString(symbol).matches("[0-9]")){
-				hexNum2Dec = hexNum2Dec+ Integer.parseInt(Character.toString(symbol))*(int)Math.pow(16,lengthOfHexNum);
-				lengthOfHexNum--;
-			}
-			else
-			{
-				switch(Character.toUpperCase(symbol)) {
-				case 'A':
-					hexNum2Dec = hexNum2Dec+ 10*(int)Math.pow(16,lengthOfHexNum);	
-					break;
-				case 'B':
-					hexNum2Dec = hexNum2Dec+ 11*(int)Math.pow(16,lengthOfHexNum);	
-					break;
-				case 'C':
-					hexNum2Dec = hexNum2Dec+ 12*(int)Math.pow(16,lengthOfHexNum);
-					break;
-				case 'D':
-					hexNum2Dec = hexNum2Dec+ 13*(int)Math.pow(16,lengthOfHexNum);	
-					break;
-				case 'E':
-					hexNum2Dec = hexNum2Dec+ 14*(int)Math.pow(16,lengthOfHexNum);	
-					break;
-				case 'F':
-					hexNum2Dec = hexNum2Dec+ 15*(int)Math.pow(16,lengthOfHexNum);
-					break;
-				
-				}
-				lengthOfHexNum--;
-				
-			}
-			
-			
-			
-		}
-		
-		
-		return hexNum2Dec;
-	}
-	public static int hexToOctal(String hexNumToDec) {
-	    int octNum = 0;
-	    int dec = hexToDec(hexNumToDec);
-	    int placeValue = 1; // Keeps track of positional value in octal system
-
-	    while (dec > 0) {
-	        octNum += (dec % 8) * placeValue; // Extract last octal digit and add to result
-	        dec /= 8; // Reduce decimal number by dividing by 8
-	        placeValue *= 10; // Move to the next place value (1s, 10s, 100s, etc.)
-	    }
-
-	    return octNum;
-	}
-	
-	public static String hexToBin (String hexNumToDec) {
-		    int dec = hexToDec(hexNumToDec);
-		    StringBuilder Binary = new StringBuilder ();
-		    String binNum ="";
-		    if (dec!=0) {
-		    	 while (dec > 0){
-				    	Binary.append(dec%2);
-				    	dec/=2;
-				    }
-		    	 binNum= Binary.reverse().toString();
-		    }
-		    else {
-		    	binNum = "0";
-		    }
-		    return binNum;
-		   
-	}
-	
-	public static int calcWheelSpeed (String hexNum) {
-		int wheelSpeed = 0;
-		int octNum = hexToOctal(hexNum);
-		if(octNum >100) {
-			wheelSpeed = 100;
-		}
-		else if (octNum > 50) {
-			wheelSpeed = octNum;
-		}
-		else {
-			wheelSpeed = octNum + 50;
-		}
-		return wheelSpeed;
-	}
-	
-	public static void calcRGB (String hexNum) {
-		int dec = hexToDec(hexNum);
-		red = dec ;
-		green = dec%80*3;
-		if(red > green) {
-			blue = red;
-		}
-		else {
-			blue = green;
-		}
-		}
-	
-	public static void peformMovements (String hexNum) {
-		int [] colour = {red, green, blue};
-		int octNum = hexToOctal(hexNum);
-		int decNum = hexToDec(hexNum);
-		String binNum = hexToBin(hexNum);
-		int wheelSpeed = calcWheelSpeed(hexNum);
-		
-		swiftBot.fillUnderlights(colour);
-		for(int i = 0; i < binNum.length();i++) {
-			if(binNum.charAt(i) == '0') {
-				swiftBot.move(100, 0, 4000);
-			}
-			else {
-				if(hexNum.length()>=1) {
-					swiftBot.move(wheelSpeed, wheelSpeed, 1000);
-				}
-				else {
-					swiftBot.move(wheelSpeed, wheelSpeed, 500);
-				}
-			}
-		}
 	}
 		
 }
