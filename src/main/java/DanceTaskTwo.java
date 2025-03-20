@@ -1,6 +1,8 @@
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import swiftbot.Button;
 import swiftbot.ImageSize;
 import swiftbot.SwiftBotAPI;
 import java.util.concurrent.*;
@@ -53,19 +55,19 @@ public class DanceTaskTwo {
 			ScannedString = swiftBot.decodeQRImage(ScannedImage);
 			if (scanCount % 5 ==0) { //checks for QR code 5 times before asking if the user is still trying
 				System.out.println("Are you still trying to scan?");
-				System.out.println("type y/Y for yes or n/N for No");
-				String stillHereCheck = console.nextLine().toUpperCase();
-				while(!stillHereCheck.equals("Y") && !stillHereCheck.equals("N")){
-					System.out.println("type y/Y for yes or n/N for No");
-					stillHereCheck = console.nextLine().toUpperCase();
+				System.out.println("press Y for yes or X for No on the robot ");
+				int stillHereCheck = ButtonCheck();
+				while(stillHereCheck != 2 && stillHereCheck != 3){
+					System.out.println("Please press Y for yes or X for No on the robot ");
+					stillHereCheck = ButtonCheck();
 				}
-				if(stillHereCheck.equals("Y")) {
+				if(stillHereCheck ==  3) {
 					System.out.println("try a different QR code or move the camera"); //suggests options if user is still trying
 					TimeUnit.SECONDS.sleep(2);
 					ScannedImage = swiftBot.getQRImage();
 					ScannedString = swiftBot.decodeQRImage(ScannedImage);
 				}
-				if(stillHereCheck.equals("N")) {
+				if(stillHereCheck == 2) {
 					earlyExit = true;
 				}
 			}
@@ -140,16 +142,16 @@ public class DanceTaskTwo {
 				for(int i = 0; i < currentHexNums.size();i++) {
 					currentHexNums.get(i).peformMovements();
 				}// runs the moves one by one 
-				System.out.println("If you would like scan a new set of hexdecimal moves please type Y/y");
-				System.out.println("If you would like to log the moves and quit the progam please type N/n");
+				System.out.println("If you would like scan a new set of hexdecimal moves please press Y on the Robot");
+				System.out.println("If you would like to log the moves and quit the progam please press X on the Robot");
 				//prompts user to input a new QR Code or to exit the program
-				String input = console.nextLine().toUpperCase();
+				int input = ButtonCheck();
 				
-				while(!input.equals("N") && !input.equals("Y") ) {
-					System.out.println("Please input n/N or y/Y");
-					input = console.nextLine().toUpperCase();
+				while(input != 2 && input != 3 ) {
+					System.out.println("Please Press X or Y on the Robot");
+					input = ButtonCheck();
 				}
-				if(input.equals("N")) {
+				if(input == 2) {
 					programOn = false;
 				} //switches the program off exiting the while loop 
 			}
@@ -166,7 +168,7 @@ public class DanceTaskTwo {
 		System.out.println("Find the move log file here! --> " + moveLog.getAbsolutePath()); //outputs the file path for move log
 		moveLogFileWriter.close();
 		System.out.println("Come make me dance again soon!"); 
-		
+		System.exit(0);
 	}
 	catch (IOException e) {
 		e.printStackTrace();
@@ -219,6 +221,60 @@ public class DanceTaskTwo {
 	            invalidHexes.add(hexNum);
 	        }
 	    }
+	}
+	
+	public static int ButtonCheck() {
+	   int quitCheck = 0;
+	    
+	    final int[] buttonPress = { -1 }; 
+	    Button buttons[] = { Button.A, Button.B, Button.X, Button.Y };
+	    CountDownLatch latch = new CountDownLatch(1); // Latch to wait for a button press
+
+	    // Configure button actions
+	    swiftBot.enableButton(Button.A, () -> {
+	        buttonPress[0] = 0;
+	        swiftBot.disableButton(Button.A);
+	        latch.countDown(); // Release the latch when Button A is pressed
+	    });
+	    swiftBot.enableButton(Button.B, () -> {
+	        buttonPress[0] = 1;
+	        swiftBot.disableButton(Button.B);
+	        latch.countDown(); // Release the latch when Button B is pressed
+	    });
+	    swiftBot.enableButton(Button.X, () -> {
+	        buttonPress[0] = 2;
+	        swiftBot.disableButton(Button.X);
+	        latch.countDown(); // Release the latch when Button X is pressed
+	    });
+	    swiftBot.enableButton(Button.Y, () -> {
+	        buttonPress[0] = 3;
+	        swiftBot.disableButton(Button.Y);
+	        latch.countDown(); // Release the latch when Button Y is pressed
+	    });
+
+	    try {
+	        latch.await(); // Wait for a button press
+	    } catch (InterruptedException e) {
+	        Thread.currentThread().interrupt(); // Restore interrupt status
+	        return 0;
+	    }
+
+	    // Check if the button pressed matches the expected value
+	    if (buttonPress[0] == 2) {
+	        quitCheck = 2;
+	    }
+	    else if (buttonPress[0] == 3){
+	    	  quitCheck = 3;
+	    } 
+	    else if (buttonPress[0] == 1){
+	    	  quitCheck = 1;
+	    }
+	    else {
+	    	quitCheck = 0;
+	    }
+	    swiftBot.disableAllButtons();
+
+	    return quitCheck;
 	}
 		
 }
