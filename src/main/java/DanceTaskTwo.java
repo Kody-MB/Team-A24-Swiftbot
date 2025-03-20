@@ -87,7 +87,7 @@ public class DanceTaskTwo {
 			
 			if(currentHexNums.isEmpty()) { //checks if there were valid hexadecimal numbers 
 				System.out.println("no valid hexadecimal numbers");
-				System.out.println("only hexadecimal numbers are accepted moves");
+				System.out.println("only  1 to 2 digit hexadecimal numbers that are seperated by ':' are accepted moves");
 				TimeUnit.SECONDS.sleep(2);
 			}
 			else {
