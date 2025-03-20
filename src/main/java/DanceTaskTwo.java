@@ -5,6 +5,11 @@ import swiftbot.ImageSize;
 import swiftbot.SwiftBotAPI;
 import java.util.concurrent.*;
 import java.io.*;
+import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
+
+
 public class DanceTaskTwo {
 
 	static SwiftBotAPI swiftBot;
@@ -121,10 +126,10 @@ public class DanceTaskTwo {
 				TimeUnit.SECONDS.sleep(1);
 				
 				try {
+					  Collections.sort(currentHexNums, Comparator.comparingInt(Moves::getDecNum));
 					for(int i = 0; i < currentHexNums.size();i++) {
 						moveLogFileWriter.write("\n" + currentHexNums.get(i).getHexNum());
 					} //logs the move set into the move log file 
-					
 				}
 				
 
