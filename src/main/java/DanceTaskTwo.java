@@ -18,7 +18,7 @@ public class DanceTaskTwo {
 	static ArrayList <String> invalidHexes = new ArrayList<String>();
 	static ArrayList<Moves> currentHexNums = new ArrayList<Moves>(); //stores the current list of inputed numbers 
 
-	public static void main(String[] args) {
+	public void start() {
 	BufferedImage ScannedImage;
 	String ScannedString = null;
 	 File moveLog = new File("TaskTwoDance_Move_Log_File.txt"); //creates new file for completed moves
