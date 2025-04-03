@@ -28,10 +28,11 @@ public class SwiftBotLightSeek {
     private static final int[] OBSTACLE_COLOUR = {255, 0, 0}; // If obstacle is detected it will show red light
     private static final int[] INACTIVE_COLOUR = {0, 0, 255}; // If the robot hasn't been activated or isn't stationary then it will have blue underlights
     private static final int OBSTACLE_TIMER = 10000; // this is the 10 second timer for if a obstacle is in the way
+    private static boolean running = true;
     
-    public void start() {
+    public void start(SwiftBotAPI bot) {
         
-        API = new SwiftBotAPI(); 
+        API = bot; 
         journeyLog = new ArrayList<>();
         
         setupButtons(); // this is to set up the buttons actions
@@ -43,13 +44,15 @@ public class SwiftBotLightSeek {
         System.out.println("Press Button X at any time if you wish to stop the journey");
         
         // Keep program running and it will make sure to look out for if the buttons are pressed
-        while (true) {
+        while (running) {
             try {
                 Thread.sleep(100); //doesnt execute anything for 100 milliseconds (reduces cpu usage)
             } catch (InterruptedException e) {
                 e.printStackTrace(); //this is used to identify any interruptions during the sleep 
             }
         }
+        API.disableAllButtons();
+        running = true;
     }
     
     private static void setupButtons() {
@@ -72,6 +75,7 @@ public class SwiftBotLightSeek {
                 System.out.println("We won't display your journey information in that case.");
                 API.disableButton(Button.X); // button x is disabled after pressing it as no journey is active
                 API.disableButton(Button.Y); //button y is also disabled as it will not be needed anymore
+                running = false;
             }
         });
         

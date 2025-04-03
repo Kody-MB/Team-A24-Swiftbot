@@ -23,12 +23,12 @@ public class ObjectDetectionTaskSix {
     private static String logFilePath = "";
     private static boolean isRunning = true; // Flag to control behavior loops
     
-    public void start() {
+    public void start(SwiftBotAPI bot) {
         // Record start time
         startTime = LocalDateTime.now();
         
         // Create a new instance of the SwiftBot API to control the robot
-        SwiftBotAPI swiftbot = new SwiftBotAPI();
+        SwiftBotAPI swiftbot = bot;
         
         // Set up the images directory
         try {
@@ -186,10 +186,11 @@ public class ObjectDetectionTaskSix {
             // If max attempts reached without finding a valid mode
             System.out.println("-------------Maximum scan attempts (" + MAX_SCAN_ATTEMPTS + ") reached without detecting a valid mode.-------------");
             System.out.println("-------------Please restart the program to try again.-------------");
-            
+     
             // Exit the program
-            System.exit(0);
+         
         }
+        swiftbot.disableAllButtons();
     }
     
     // Method to configure buttons for log viewing
@@ -206,7 +207,6 @@ public class ObjectDetectionTaskSix {
             swiftbot.enableButton(Button.X, () -> {
                 System.out.println("-------------X button pressed. Exiting program.-------------");
                 System.out.println("Images saved at: " + imagesPath);
-                System.exit(0);
             });
         });
         
@@ -214,7 +214,7 @@ public class ObjectDetectionTaskSix {
         swiftbot.enableButton(Button.X, () -> {
             System.out.println("X button pressed. Exiting program without viewing log.");
             System.out.println("Images saved at: " + imagesPath);
-            System.exit(0);
+            
         });
         
         // Keep the program running until a button is pressed

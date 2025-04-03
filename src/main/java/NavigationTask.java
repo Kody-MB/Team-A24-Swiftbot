@@ -18,9 +18,9 @@ public class NavigationTask {
 	static Queue<String> commandQueue = new LinkedList<>(); // Store the commands
 	static long programStartTime; // Track program start time
 
-	public void start()  throws InterruptedException {
+	public void start(SwiftBotAPI bot)  throws InterruptedException {
 		try {
-			swiftBot = new SwiftBotAPI();
+			swiftBot = bot;
 			programStartTime = System.currentTimeMillis(); // Initialize program start time 	
 		} catch (Exception e) {
 			System.out.println("\nI2C disabled!");
@@ -30,8 +30,8 @@ public class NavigationTask {
 		}
 
 		Scanner reader = new Scanner(System.in);
-
-		while (true) {
+		boolean programOn = true;
+		while (programOn) {
             System.out.println("\nWould you like to start? (yes/no)");
             String ans = reader.next();
 
@@ -45,8 +45,7 @@ public class NavigationTask {
                     break;
 
                 case "no":
-                    reader.close();
-                    System.exit(0);
+                    programOn = false;
                     break;
 
                 default:
@@ -54,6 +53,7 @@ public class NavigationTask {
                     break;
             }
         }
+		programOn = true;
     }
 
 	public static String scanQRCode(long timeout) throws InterruptedException {

@@ -8,9 +8,9 @@ public class ZigZag {
     private static SwiftBotAPI swiftBot;
     private static SwiftBotController speedController;
 
-    public void start () throws InterruptedException {
+    public void start (SwiftBotAPI bot) throws InterruptedException {
         try {
-            swiftBot = new SwiftBotAPI();
+            swiftBot = bot;
         } catch (Exception e) {
             System.out.println("\nI2C disabled!");
             System.out.println("Run the following command:");
@@ -26,7 +26,8 @@ public class ZigZag {
             System.out.println("Choose input method:");
             System.out.println("1. Manual input");
             System.out.println("2. Scan QR code");
-            System.out.print("Enter choice (1 or 2): ");
+            System.out.println("3. To Quit");
+            System.out.print("Enter choice (1 or 2 or 3): ");
             String choice = scanner.nextLine();
 
             String input = "";
@@ -40,7 +41,12 @@ public class ZigZag {
                     continue;
                 }
                 System.out.println("Scanned input: " + input);
-            } else {
+            }
+            if (choice.equals("3")) {
+            	running = false;
+            }
+            
+            else {
                 System.out.println("Invalid choice. Try again.");
                 continue;
             }
@@ -72,7 +78,7 @@ public class ZigZag {
         }
 
         displaySummary();
-        scanner.close();
+        running = true;
     }
 
     private static String scanQRCode() {

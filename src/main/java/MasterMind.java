@@ -8,26 +8,23 @@ import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
 public class MasterMind {
-    SwiftBotAPI API = new SwiftBotAPI();
+	static SwiftBotAPI API;
     private final String[] COLORS = {"R", "G", "B", "Y", "O", "P"};  // Available colors
     private String[] secretCode;  // The secret code the player needs to guess
     private int maxAttempts = 6;  // Maximum number of attempts allowed
     private int playerScore = 0;  // Player's score
     private int botScore = 0;  // Bot's score
     private File logFile = new File("game_log.txt");  // Log file for the game
+    private boolean programOn = true;
 
     // For handling button presses during the game
     private CountDownLatch buttonLatch;
     private String buttonPressed = "";
     private int numColorsSelected = 4;  // Default number of colors in the code
     private int attemptsSelected = 6;  // Default maximum number of attempts
-
-    public MasterMind() {
-        // Initialize SwiftBot and set up buttons for interaction
-        setupButtons();
-    }
     
-    private void setupButtons() {
+    private void setupButtons(SwiftBotAPI bot) {
+    	API = bot;
         // Set up button A and B for game mode selection
         API.enableButton(Button.A, () -> {
             buttonPressed = "A";
@@ -103,9 +100,10 @@ public class MasterMind {
     }
 
     // Starts the game loop where the user can select a mode and play
-    public void startGame() {
-        while (true) {
-            System.out.println("Press 'A' for Default mode or 'B' for Customized mode:");
+    public void startGame(SwiftBotAPI bot) {
+    	setupButtons(bot);
+        while (programOn) {
+            System.out.println("Press 'A' for Default mode or 'B' for Customized mode: or Press 'X' to quit ");
             String mode = waitForButtonPress();
             
             // Choose game mode based on the button press
@@ -115,7 +113,11 @@ public class MasterMind {
                 numColorsSelected = getNumericInput("Enter number of colors:", 3, 6);
                 attemptsSelected = getNumericInput("Enter max attempts:", 1, 10);
                 playGame(numColorsSelected, attemptsSelected);  // Customized mode
-            } else {
+            } else if (mode.equals("X")) {
+            	programOn = false;
+            }
+            
+            else {
                 System.out.println("Invalid choice. Try again.");
                 continue;
             }
@@ -123,7 +125,7 @@ public class MasterMind {
             // Ask the player if they want to quit or play again
             System.out.println("Press 'X' to quit or 'Y' to play again:");
             String choice = waitForButtonPress();
-            if (choice.equals("X")) break;
+            if (choice.equals("X")) programOn = false;
         }
         System.out.println("Game log saved at: " + logFile.getAbsolutePath());
         
@@ -132,6 +134,7 @@ public class MasterMind {
         API.disableButton(Button.B);
         API.disableButton(Button.X);
         API.disableButton(Button.Y);
+        programOn = true;
     }
 
     // Main game logic for playing the game with given number of colors and attempts
@@ -373,7 +376,8 @@ public class MasterMind {
     }
 
     // Main entry point to start the game
-    public static void main(String[] args) {
-        new MasterMind().startGame();
+    public void start(SwiftBotAPI bot) {
+    	API = bot;
+        new MasterMind().startGame(bot);
     }
 }

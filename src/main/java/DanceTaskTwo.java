@@ -18,7 +18,7 @@ public class DanceTaskTwo {
 	static ArrayList <String> invalidHexes = new ArrayList<String>();
 	static ArrayList<Moves> currentHexNums = new ArrayList<Moves>(); //stores the current list of inputed numbers 
 
-	public void start() {
+	public void start(SwiftBotAPI bot) {
 	BufferedImage ScannedImage;
 	String ScannedString = null;
 	 File moveLog = new File("TaskTwoDance_Move_Log_File.txt"); //creates new file for completed moves
@@ -34,7 +34,7 @@ public class DanceTaskTwo {
 	}
 	
 	
-	swiftBot = new SwiftBotAPI();
+	swiftBot = bot;
 	System.out.println("-------------Welcome-------------");
 	while(programOn){
 		
@@ -168,7 +168,8 @@ public class DanceTaskTwo {
 		System.out.println("Find the move log file here! --> " + moveLog.getAbsolutePath()); //outputs the file path for move log
 		moveLogFileWriter.close();
 		System.out.println("Come make me dance again soon!"); 
-		System.exit(0);
+		swiftBot.disableAllButtons();
+		programOn = true;
 	}
 	catch (IOException e) {
 		e.printStackTrace();
